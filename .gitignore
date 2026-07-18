@@ -1,0 +1,58 @@
+# Dependencies
+node_modules
+.pnp
+.pnp.js
+.pnp.loader.mjs
+
+# If you switch to yarn/pnpm, you usually don't commit their lock files in an npm project
+yarn.lock
+pnpm-lock.yaml
+
+# Build outputs
+dist
+dist-ssr
+build
+out
+*.local
+
+# Vite / TypeScript caches and incremental build info
+.vite
+*.tsbuildinfo
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Cache
+.eslintcache
+.cache
+.parcel-cache
+
+# Editor / OS
+.DS_Store
+.vscode/*
+!.vscode/extensions.json
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Testing
+coverage
+*.lcov
+
+# Misc
+.env
+.env.*
+!.env.example
+
+# Temporary folders
+/tmp
+tmp
+temp

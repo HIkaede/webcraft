@@ -1,0 +1,302 @@
+/* 字体（design.md §4）：Minecraft 像素字体（CDNFonts minecraft-4，font-family 名 'Minecraft'）
+   → 回退 Press Start 2P（拉丁） → Noto Sans SC（中文，原版 Unicode 字体观感）。 */
+@import url('https://fonts.cdnfonts.com/css/minecraft-4');
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Noto+Sans+SC:wght@400;500;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* ---- GUI Scale 度量系统（design.md §5）：1 个 MC 逻辑像素 = var(--u) CSS px ----
+       由 src/stores/settings.ts 的 applyGuiScale() 驱动（auto: clamp(floor(min(vw/427, vh/240)), 2, 3)）。 */
+    --u: 3px;
+
+    /* ---- MC UI 色板（design.md §3.1） ---- */
+    --mc-text: #ffffff;
+    --mc-text-shadow: #3f3f3f; /* 阴影色 = 文本色 RGB ÷ 4 */
+    --mc-yellow: #ffff00;
+    --mc-yellow-shadow: #3f3f00;
+    --mc-gray-desc: #a0a0a0;
+    --mc-gray-line: #808080;
+    --mc-red: #ff5555;
+    --mc-red-shadow: #3f1515;
+    --mc-green: #55ff55;
+    --mc-xp-green: #80ff20;
+    --mc-gold: #fcfc54;
+    --mc-btn-face-top: #7e7e7e;
+    --mc-btn-face-bottom: #5f5f5f;
+    --mc-btn-border: #000000;
+    --mc-btn-hi: rgba(255, 255, 255, 0.3);
+    --mc-btn-lo: rgba(0, 0, 0, 0.42);
+    --mc-btn-hover-top: #8a94c4;
+    --mc-btn-hover-bottom: #6b72a0;
+    --mc-btn-disabled: #5e5e5e;
+    --mc-panel: #c6c6c6;
+    --mc-panel-dark: #373737;
+    --mc-panel-hi: #ffffff;
+    --mc-panel-lo: #555555;
+    --mc-slot: #8b8b8b;
+    --mc-tooltip-bg: rgba(16, 0, 16, 0.94);
+    --mc-tooltip-border-top: #5000ff;
+    --mc-tooltip-border-bottom: #28007f;
+
+    /* ---- shadcn 令牌（保留，供 src/components/ui 复用逻辑） ---- */
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 240 5.9% 10%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 240 5.9% 10%;
+    --radius: 0.625rem;
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 240 3.8% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 240 5.9% 10%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 240 3.7% 15.9%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 240 5.9% 10%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 240 4.9% 83.9%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 240 3.7% 15.9%;
+    --sidebar-primary-foreground: 240 3.8% 98%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    @apply bg-black font-pixel;
+    color: var(--mc-text);
+    /* 全站菜单像素光标（design.md §7）；游戏内由 canvas 上的 .mc-cursor-none 覆盖 */
+    cursor:
+      url('/cursor.svg') 2 2,
+      auto;
+    overflow: hidden;
+  }
+
+  /* 键盘可达：MC 风格聚焦框 = 元素外 1u 白色虚线 */
+  :focus-visible {
+    outline: var(--u) dashed #ffffff;
+    outline-offset: var(--u);
+  }
+}
+
+/* ================= MC 共享样式（design.md §3/§5/§9） ================= */
+@layer components {
+  /* ---- 文本硬阴影（全局铁律：text-shadow 1u 1u 0 <文本色÷4>，禁止 blur） ---- */
+  .mc-text {
+    text-shadow: var(--u) var(--u) 0 var(--mc-text-shadow);
+  }
+  .mc-text-yellow {
+    color: var(--mc-yellow);
+    text-shadow: var(--u) var(--u) 0 var(--mc-yellow-shadow);
+  }
+  .mc-text-red {
+    color: var(--mc-red);
+    text-shadow: var(--u) var(--u) 0 var(--mc-red-shadow);
+  }
+  .mc-text-green {
+    color: var(--mc-green);
+    text-shadow: var(--u) var(--u) 0 #153f15;
+  }
+  .mc-text-gold {
+    color: var(--mc-gold);
+    text-shadow: var(--u) var(--u) 0 #3f3f15;
+  }
+  .mc-text-xp {
+    color: var(--mc-xp-green);
+    text-shadow: var(--u) var(--u) 0 #203f08;
+  }
+  .mc-text-gray {
+    color: var(--mc-gray-desc);
+    text-shadow: var(--u) var(--u) 0 #282828;
+  }
+  .mc-text-grayline {
+    color: var(--mc-gray-line);
+    text-shadow: var(--u) var(--u) 0 #202020;
+  }
+  /* 面板内深色文本（无硬阴影，inventory.md：面板内文本用深色） */
+  .mc-text-dark {
+    color: #3f3f3f;
+    text-shadow: none;
+  }
+
+  /* ---- 按钮三态（design.md §3.1 按钮色板；MCButton 渲染 label 于 .mc-btn-label 内） ---- */
+  .mc-btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    height: calc(20 * var(--u));
+    padding: 0 calc(8 * var(--u));
+    border: calc(2 * var(--u)) solid var(--mc-btn-border);
+    background: linear-gradient(to bottom, var(--mc-btn-face-top), var(--mc-btn-face-bottom));
+    box-shadow:
+      inset 0 calc(1 * var(--u)) 0 var(--mc-btn-hi),
+      inset 0 calc(-1 * var(--u)) 0 var(--mc-btn-lo);
+    color: var(--mc-text);
+    font-family: inherit;
+    font-size: calc(8 * var(--u));
+    line-height: 1;
+    text-shadow: var(--u) var(--u) 0 var(--mc-text-shadow);
+    white-space: nowrap;
+    user-select: none;
+    cursor: inherit;
+  }
+  /* hover：瞬时切换高亮贴图态（0ms，原版手感） */
+  .mc-btn:hover:not(:disabled),
+  .mc-btn:focus-visible:not(:disabled) {
+    background: linear-gradient(to bottom, var(--mc-btn-hover-top), var(--mc-btn-hover-bottom));
+  }
+  /* :active：文本阴影消失、文字下移 1u */
+  .mc-btn:active:not(:disabled) .mc-btn-label {
+    transform: translateY(var(--u));
+    text-shadow: none;
+  }
+  .mc-btn:disabled {
+    background: var(--mc-btn-disabled);
+    color: var(--mc-gray-desc);
+    text-shadow: var(--u) var(--u) 0 rgba(0, 0, 0, 0.4);
+    pointer-events: none;
+  }
+  .mc-btn-danger {
+    color: var(--mc-red);
+    text-shadow: var(--u) var(--u) 0 var(--mc-red-shadow);
+  }
+
+  /* ---- 面板斜角（inventory.md：外框 2u #373737，内左上 1u 亮线、右下 1u 暗线） ---- */
+  .mc-panel {
+    background: var(--mc-panel);
+    border: calc(2 * var(--u)) solid var(--mc-panel-dark);
+    box-shadow:
+      inset calc(1 * var(--u)) calc(1 * var(--u)) 0 var(--mc-panel-hi),
+      inset calc(-1 * var(--u)) calc(-1 * var(--u)) 0 var(--mc-panel-lo);
+  }
+  /* ---- 槽位（内凹：左上 1u 暗、右下 1u 亮，底 #8B8B8B） ---- */
+  .mc-slot {
+    background: var(--mc-slot);
+    box-shadow:
+      inset calc(1 * var(--u)) calc(1 * var(--u)) 0 var(--mc-panel-dark),
+      inset calc(-1 * var(--u)) calc(-1 * var(--u)) 0 var(--mc-panel-hi);
+  }
+
+  /* ---- 泥土平铺背景（design.md §3.1：16×16 泥土纹理放大平铺 × 正片叠底 #404040） ---- */
+  .mc-dirt-bg {
+    background-color: #404040;
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2AAACcElEQVR42iXQy27bRhQA0DvDITnk8GlJlJq4kuJVaiBdt8v+Qn+lX1oUKApkodqOa+tlkxLJ4TxvF1me7SF//P5rJfj5Ku/Xi37SBODP3R4APt/OD+2Qp9F6USrrHvYtIUTwkJaCVxkvRYyAL2/Xl7ceAACgFDGlhBLy17+HQeqPs4ISsqoztqzEt9MFAB723aaphknHYbBuSgCYF6lxLk+jfTtsl5XgISIE95vFqsqaWrxd5aRtGoceMUuiy6ieTxdt3bLObrLEOm+c94jsdl4obf87XyvBecQCSqWyhJA4ZB9m+axIlbHDZJKIpXF46AYWUNKNqpe6zrk2rhR8VObQDs77blBXqdeLUqrx78cjAPz045yeujFPonaYdq8tIcQ4BwSUsXHIqowjYj/pftLfJ9p+Ysq4SvDvduiLNA4olcoAwKStR/Qe50UKAMq4URs2L1Jp7C+fbydtHw6tiCNj3b4dKCEpD0vB22HaNKXg0dfn85ftkookdM6/9/J8GRel0NZNxq4XZZXxTVOix2UlKCHvvfw4L56OHbPWny8SAcMg8IghC4bJKOPqjJ8v8uW9L3Vsnd801dOxk8pSSsn9ZvHDTR4EBACUtner+m5Vny+yn/SXbYMIcchYQDdN5RGp9/j1+Zwn0bapeMSAAAvo47EjBCZtn8/XmAVtP+1e37thChmlj8duWWf/PJ2s987jp2WNgJSQOk9mRVILLrVtKlGk8bfT5cMsZ8q4p2MXsmD32iLiTttRGUpJHAZS2UrwURkAWNUZjxgiBL/9vF3dZPMi5REDgCCgd6vae0zi0HkvtV1WWS81jxgCSGX/B8HDZbGITz0MAAAAAElFTkSuQmCC');
+    background-size: calc(16 * var(--u));
+    background-blend-mode: multiply;
+    image-rendering: pixelated;
+  }
+
+  /* ---- 死亡画面径向暗红罩（design.md §3.1） ---- */
+  .mc-death-bg {
+    background: radial-gradient(
+      ellipse at center,
+      rgba(96, 0, 0, 0.65) 0%,
+      rgba(32, 0, 0, 0.85) 100%
+    );
+  }
+  /* ---- 游戏内菜单遮罩（暂停/选项：压暗 + 1.20 同款模糊） ---- */
+  .mc-ingame-mask {
+    background: rgba(12, 12, 12, 0.6);
+    backdrop-filter: blur(8px);
+  }
+  /* ---- 标题画面渐变罩（home.md：顶白 0.16 → 透明 30%；底 透明 → 黑 0.5 70%） ---- */
+  .mc-title-vignette-top {
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.16), transparent 30%);
+  }
+  .mc-title-vignette-bottom {
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.5), transparent 70%);
+  }
+
+  /* ---- 悬浮提示框（紫渐变边框 + 黑底，design.md §3.1） ---- */
+  .mc-tooltip {
+    background: var(--mc-tooltip-bg);
+    border: var(--u) solid;
+    border-image: linear-gradient(
+        to bottom,
+        var(--mc-tooltip-border-top),
+        var(--mc-tooltip-border-bottom)
+      )
+      1;
+    color: var(--mc-text);
+    font-size: calc(8 * var(--u));
+    padding: calc(2 * var(--u)) calc(4 * var(--u));
+    pointer-events: none;
+  }
+
+  /* ---- 准星（game.md §6.2：+ 形，白色，difference 反色） ---- */
+  .mc-crosshair {
+    mix-blend-mode: difference;
+    pointer-events: none;
+  }
+}
+
+@layer utilities {
+  .pixelated {
+    image-rendering: pixelated;
+  }
+  .mc-cursor-none {
+    cursor: none;
+  }
+  .mc-no-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .mc-no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}
